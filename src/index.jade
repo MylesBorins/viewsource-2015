@@ -384,7 +384,55 @@ html
                 next(null, renderedBuffer);
               });
             }
+
+      section
+        h2 http://kni.sh/voxelMeterJS/
+        iframe.headroom(src='examples/voxel-meter' class='demo-iframe')
+        a(href='https://github.com/TheAlphaNerd/voxel-meter-js/') View the Project on Github
+
+      section
+        pre
+          code.language-javascript.
+            function Audio() {
+              this.context =
+                new (window.AudioContext || window.webkitAudioContext)();
+              this.analyzer = this.context.createAnalyser();
+              this.frequencyData = new Uint8Array(256);
+
+              wireMic(this.context, this.analyzer);
+
+              return this;
+            }
       
+      section
+        pre
+          code.language-javascript.
+            function wireMic(audioContext, analyzer) {
+              function gotStream(stream) {
+                // Create an AudioNode from the stream.
+                var mediaStreamSource = 
+                  audioContext.createMediaStreamSource(stream);
+
+                // Connect it to the destination to hear
+                // yourself (or any other node for processing!)
+                mediaStreamSource.connect(analyzer);
+              }
+
+              navigator.getUserMedia = /*shim*/
+              navigator.getUserMedia({audio: true},
+                gotStream, function (err) {
+                console.log(err);
+              });
+            }
+
+      section
+        pre
+          code.language-javascript.
+            Audio.prototype.getFFT = function () {
+              this.analyzer.getByteFrequencyData(this.frequencyData);
+              return this.frequencyData;
+            };
+
       section
         h2 http://kni.sh/harmonic
         h3 Visit the above link on your phone or lappy
@@ -392,7 +440,13 @@ html
       
       section
         img.headroom(src='images/wot.gif' alt='wot was that?' height='80%')
-        
+
+      section
+        img.headroom(src='images/harmonic_series.png' alt='a harmonic series' height='80%')
+      
+      section
+        img.headroom(src='images/fourier_flute_violin.png' alt='harmoic series of a flute and violin' height='80%')
+
       section
         pre
           code.language-javascript.
@@ -409,10 +463,8 @@ html
             osc.start();
 
       section
-        img.headroom(src='images/harmonic_series.png' alt='a harmonic series' height='80%')
-      
-      section
-        img.headroom(src='images/fourier_flute_violin.png' alt='harmoic series of a flute and violin' height='80%')
+        h2 HRTF
+        img.headroom(src='images/HRTF.jpg' alt='head related transfer functions are cool')
 
       section
         h3 Let's go back to the human ear for a second
@@ -423,7 +475,7 @@ html
         img(src='images/freq-response.jpg' alt='frequency response of the huan ear')
 
       section
-        img(src='images/double.jpg' alt='as frequency increases exponentially, how we experience pitch increases linearly')
+        img(src='images/double.jpg' alt='as frequency increases exponentially, how we experience pitch increases linearly' width="80%")
 
       section(data-bespoke-backdrop='mind-blown-again')
         h1 As frequency grows exponentially, we experience pitch linearly.
