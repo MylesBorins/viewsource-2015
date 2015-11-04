@@ -95,6 +95,10 @@ html
     .hammer {
       background-image: url('images/hammer-time.gif')
     }
+    
+    .eleven {
+      background-image: url('images/eleven.gif')
+    }
 
   body
 
@@ -309,8 +313,106 @@ html
         h1 What does a lower sample rate sounds like?
         h3 traditionally telephones are samples at 8 kHz
 
+      section(data-bespoke-backdrop='hammer')
+        h1 DEMO TIME
+
       section
         iframe(src='./examples/resamplr/index.html' class='demo-iframe')
+      
+      section
+        h2 Playing the original
+        pre
+          code.language-javascript.
+            function original() {
+              async.waterfall([
+                loadUrl.bind(null, 'put-url-hurr'),
+                playBuffer
+              ]);
+            }
+
+      section
+        h2 Playing the Resampled Version
+        pre
+          code.language-javascript.
+            function downsampled() {
+              async.waterfall([
+                loadUrl.bind(null, 'put-url-hurr'),
+                resample,
+                playBuffer
+              ]);
+            }
+      
+      section
+        pre
+          code.language-javascript.
+            // http://www.html5rocks.com/en/tutorials/webaudio/intro/
+            function loadUrl(url, next) {
+              var request = new XMLHttpRequest();
+              request.open('GET', url, true);
+              request.responseType = 'arraybuffer';
+              request.onload = function() {
+                context.decodeAudioData(request.response, function (buffer) {
+                  next(null, buffer);
+                });
+              };
+              request.send();
+            }
+      
+      section
+        pre
+          code.language-javascript.
+            function playBuffer(buffer/*, next*/) {
+              var source = context.createBufferSource();
+              source.buffer = buffer;
+              source.connect(context.destination);
+              source.start(0);
+            }
+      
+      section
+        pre
+          code.language-javascript.
+            function resample(buffer, next) {
+              var frameCount = buffer.length
+                * resampleRate / buffer.sampleRate;
+              var offlineContext = new OfflineAudioContext(
+                buffer.numberOfChannels, frameCount, resampleRate);
+              var bufferSource = offlineContext.createBufferSource();
+              bufferSource.buffer = buffer;
+              bufferSource.connect(offlineContext.destination);
+              bufferSource.start();
+              offlineContext.startRendering().then(function (renderedBuffer) {
+                next(null, renderedBuffer);
+              });
+            }
+      
+      section
+        h2 http://kni.sh/harmonic
+        h3 Visit the above link on your phone or lappy
+        h4 P.S. it is about to make some sound, so turn it up!
+      
+      section
+        img.headroom(src='images/wot.gif' alt='wot was that?' height='80%')
+        
+      section
+        pre
+          code.language-javascript.
+            var context =
+              new (window.AudioContext || window.webkitAudioContext)();
+
+            var base = 55;
+            var overtone = Math.floor(Math.random() * 15) + 1;
+            var freq = base * overtone;
+            var osc = context.createOscillator();
+
+            osc.frequency.value = freq;
+            osc.connect(context.destination);
+            osc.start();
+
+      section
+        img.headroom(src='images/harmonic_series.png' alt='a harmonic series' height='80%')
+      
+      section
+        img.headroom(src='images/fourier_flute_violin.png' alt='harmoic series of a flute and violin' height='80%')
 
       section
         h3 Let's go back to the human ear for a second
@@ -375,10 +477,7 @@ html
 
       section
         h1 Let that sink in for a second
-
-      section(data-bespoke-backdrop='hammer')
-        h1 DEMO TIME
-
+        
       section
         h2 Thank You
         img.headroom(src='images/best-gif-evar.gif' alt='a surfing puppy' width='20%')
