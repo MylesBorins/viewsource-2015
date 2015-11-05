@@ -1,5 +1,5 @@
-# Would a sample by any other name sound as sweet?
-##Presented at forwardJS 3 in 2015
+# Signal Processing, Perceptual Audio, and the Web Audio API
+##Presented at ViewSource 2015
 > A [Bespoke.js](http://markdalgleish.com/projects/bespoke.js) presentation, built with [generator-bespoke](https://github.com/markdalgleish/generator-bespoke)
 
 ## View slides locally
